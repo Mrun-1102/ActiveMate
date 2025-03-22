@@ -1,0 +1,77 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="activity-history-header section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1>Activity History</h1>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="activity-history-content section">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12">
+        <a href="{% url 'log_activity' %}" class="btn btn-primary">Log New Activity</a>
+        <a href="{% url 'activity_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">All Activities</h5>
+          </div>
+          <div class="card-body">
+            {% if activities %}
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Steps</th>
+                      <th>Calories</th>
+                      <th>Distance</th>
+                      <th>Active Minutes</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for activity in activities %}
+                      <tr>
+                        <td>{{ activity.date }}</td>
+                        <td>{{ activity.steps }}</td>
+                        <td>{{ activity.calories_burned }}</td>
+                        <td>{{ activity.distance_km }} km</td>
+                        <td>{{ activity.active_minutes }} min</td>
+                        <td>
+                          <a href="{% url 'edit_activity' pk=activity.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                          <a href="{% url 'delete_activity' pk=activity.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <p class="text-center">No activity data available. <a href="{% url 'log_activity' %}">Log your activity</a> to start tracking.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

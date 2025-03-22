@@ -1,0 +1,110 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="workout-list-header section bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Workout Plans</h1>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="workout-plans section">
+    <div class="container">
+        <div class="row">
+            {% if user.is_staff %}
+            <div class="col-12 mb-4">
+                <a href="{% url 'create_workout_plan' %}" class="btn btn-primary">Create New Workout Plan</a>
+            </div>
+            {% endif %}
+
+            {% for plan in workout_plans %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">{{ plan.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ plan.description }}</p>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item"><strong>Level:</strong> {{ plan.get_level_display }}</li>
+                            <li class="list-group-item"><strong>Goal:</strong> {{ plan.get_goal_display }}</li>
+                            <li class="list-group-item"><strong>Duration:</strong> {{ plan.duration_weeks }} weeks</li>
+                        </ul>
+                        <a href="{% url 'workout_plan_detail' pk=plan.pk %}" class="btn btn-primary">View Plan</a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'edit_workout_plan' pk=plan.pk %}" class="btn btn-secondary">Edit</a>
+                        <a href="{% url 'delete_workout_plan' pk=plan.pk %}" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No workout plans available yet. Check back soon!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="workout-history section bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Your Recent Workouts</h2>
+                {% if user_workouts %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Workout</th>
+                                <th>Duration</th>
+                                <th>Calories</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for workout in user_workouts|slice:":5" %}
+                            <tr>
+                                <td>{{ workout.date }}</td>
+                                <td>{{ workout.workout_day.name }}</td>
+                                <td>{{ workout.duration_minutes }} min</td>
+                                <td>{{ workout.calories_burned|default:"--" }}</td>
+                                <td>
+                                    <a href="{% url 'workout_detail' pk=workout.pk %}"
+                                        class="btn btn-sm btn-primary">View</a>
+                                    <a href="{% url 'edit_workout' pk=workout.pk %}"
+                                        class="btn btn-sm btn-secondary">Edit</a>
+                                    <a href="{% url 'delete_workout' pk=workout.pk %}"
+                                        class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'workout_history' %}" class="btn btn-primary">View All Workouts</a>
+                {% else %}
+                <div class="alert alert-info">
+                    You haven't logged any workouts yet. Start a workout to track your progress!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

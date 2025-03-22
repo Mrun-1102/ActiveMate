@@ -1,0 +1,92 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="profile-section section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="rounded-circle mx-auto mb-3 bg-secondary d-flex align-items-center justify-content-center"
+                            style="width: 150px; height: 150px;">
+                            <i class="bi bi-person-fill text-white" style="font-size: 80px;"></i>
+                        </div>
+                        <h2 class="account-heading">{{ user.username }}</h2>
+                        <p class="text-secondary">{{ user.email }}</p>
+
+                        <div class="mt-3">
+                            <p><strong>Fitness Goal:</strong> {{ user.profile.get_fitness_goal_display|default:"Not
+                                specified" }}</p>
+                            <p><strong>Fitness Level:</strong> {{ user.profile.get_fitness_level_display|default:"Not
+                                specified" }}</p>
+                            <p><strong>Membership:</strong> {{ user.profile.get_plan_display }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="mb-4">Update Profile</h3>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <fieldset class="form-group">
+                                <legend class="border-bottom mb-4">Profile Info</legend>
+                                {{ u_form|crispy }}
+                                {{ p_form|crispy }}
+                            </fieldset>
+                            <div class="form-group mt-4">
+                                <button class="btn btn-primary" type="submit">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-4">
+                    <div class="card-body p-4">
+                        <h3 class="mb-4">Workout Statistics</h3>
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="border rounded p-3">
+                                    <h4 class="h2 mb-0">{{ user.workout_logs.count }}</h4>
+                                    <p class="text-muted">Workouts Completed</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="border rounded p-3">
+                                    <h4 class="h2 mb-0">
+                                        {% if user.workout_logs.count > 0 %}
+                                        {{ user.workout_logs.last.date|date:"M d" }}
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </h4>
+                                    <p class="text-muted">Last Workout</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="border rounded p-3">
+                                    <h4 class="h2 mb-0">
+                                        {% if user.workout_logs.count > 0 %}
+                                        {{ total_workout_minutes }}
+                                        {% else %}
+                                        0
+                                        {% endif %}
+                                    </h4>
+                                    <p class="text-muted">Total Minutes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'workout_history' %}" class="btn btn-outline-primary">View Workout
+                                History</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

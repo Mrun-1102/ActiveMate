@@ -1,0 +1,103 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="workout-plan-header section bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>{{ workout_plan.name }}</h1>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="workout-plan-details section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Plan Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ workout_plan.description }}</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Level:</strong> {{ workout_plan.get_level_display }}
+                            </li>
+                            <li class="list-group-item"><strong>Goal:</strong> {{ workout_plan.get_goal_display }}</li>
+                            <li class="list-group-item"><strong>Duration:</strong> {{ workout_plan.duration_weeks }}
+                                weeks</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {% if user.is_staff %}
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Admin Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'edit_workout_plan' pk=workout_plan.pk %}"
+                            class="btn btn-secondary mb-2 w-100">Edit Plan</a>
+                        <a href="{% url 'delete_workout_plan' pk=workout_plan.pk %}"
+                            class="btn btn-danger mb-2 w-100">Delete Plan</a>
+                        <a href="{% url 'add_workout_day' plan_pk=workout_plan.pk %}" class="btn btn-primary w-100">Add
+                            Workout Day</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Workout Schedule</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if workout_days %}
+                        <div class="list-group">
+                            {% for day in workout_days %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Day {{ day.day_number }}: {{ day.name }}</h5>
+                                    <small>{{ day.exercises.count }} exercises</small>
+                                </div>
+                                <div class="mt-2">
+                                    <a href="{% url 'workout_day_detail' plan_pk=workout_plan.pk day_pk=day.pk %}"
+                                        class="btn btn-sm btn-primary">View Workout</a>
+                                    <a href="{% url 'start_workout' day_pk=day.pk %}"
+                                        class="btn btn-sm btn-success">Start Workout</a>
+                                    {% if user.is_staff %}
+                                    <a href="{% url 'edit_workout_day' plan_pk=workout_plan.pk day_pk=day.pk %}"
+                                        class="btn btn-sm btn-secondary">Edit</a>
+                                    <a href="{% url 'delete_workout_day' plan_pk=workout_plan.pk day_pk=day.pk %}"
+                                        class="btn btn-sm btn-danger">Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            No workout days have been added to this plan yet.
+                            {% if user.is_staff %}
+                            <a href="{% url 'add_workout_day' plan_pk=workout_plan.pk %}">Add a workout day</a> to get
+                            started.
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

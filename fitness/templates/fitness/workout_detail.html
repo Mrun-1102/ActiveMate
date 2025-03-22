@@ -1,0 +1,144 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="workout-detail-section section">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'workout_plans' %}">Workout Plans</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'workout_plan_detail' workout.plan.id %}">{{
+                                workout.plan.title }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ workout.title }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h2 class="mb-3">{{ workout.title }}</h2>
+                        <div class="d-flex mb-3">
+                            <span class="badge bg-primary me-2">{{ workout.get_day_of_week_display }}</span>
+                            <span class="badge bg-secondary">{{ workout.plan.get_level_display }}</span>
+                        </div>
+                        <p>{{ workout.description }}</p>
+                        <div class="text-end">
+                            <a href="{% url 'start_workout' workout.id %}" class="btn btn-primary">Start Workout</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="mb-4">Exercises</h3>
+
+                        <div class="row">
+                            {% for exercise_item in exercises %}
+                            <div class="col-md-12 mb-4">
+                                <div class="card exercise-card">
+                                    <div class="row g-0">
+                                        <div class="col-md-4">
+                                            {% if exercise_item.exercise.image %}
+                                            <img src="{{ exercise_item.exercise.image.url }}"
+                                                class="img-fluid rounded-start" alt="{{ exercise_item.exercise.name }}">
+                                            {% else %}
+                                            <img src="{% static 'assets/img/exercise-placeholder.jpg' %}"
+                                                class="img-fluid rounded-start" alt="{{ exercise_item.exercise.name }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <h5 class="card-title">{{ exercise_item.exercise.name }}</h5>
+                                                    <span class="badge bg-info">{{
+                                                        exercise_item.exercise.get_muscle_group_display }}</span>
+                                                </div>
+                                                <p class="card-text">{{ exercise_item.exercise.description }}</p>
+                                                <div class="row mt-3">
+                                                    <div class="col-4 text-center">
+                                                        <h6>Sets</h6>
+                                                        <p class="fw-bold">{{ exercise_item.sets }}</p>
+                                                    </div>
+                                                    <div class="col-4 text-center">
+                                                        <h6>Reps</h6>
+                                                        <p class="fw-bold">{{ exercise_item.reps }}</p>
+                                                    </div>
+                                                    <div class="col-4 text-center">
+                                                        <h6>Rest</h6>
+                                                        <p class="fw-bold">{{ exercise_item.rest_time }}s</p>
+                                                    </div>
+                                                </div>
+                                                {% if exercise_item.exercise.video_url %}
+                                                <div class="text-end mt-2">
+                                                    <a href="{{ exercise_item.exercise.video_url }}"
+                                                        class="btn btn-sm btn-outline-primary" target="_blank">
+                                                        <i class="bi bi-play-circle"></i> Watch Demo
+                                                    </a>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h3 class="mb-3">Workout Summary</h3>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Total Exercises
+                                <span>{{ exercises|length }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Estimated Duration
+                                <span>45-60 minutes</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Difficulty
+                                <span>{{ workout.plan.get_level_display }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Focus
+                                <span>
+                                    {% for exercise in exercises %}
+                                    {% if forloop.first %}
+                                    {{ exercise.exercise.get_muscle_group_display }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="mb-3">Equipment Needed</h3>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="bi bi-check2-circle me-2 text-success"></i> Dumbbells
+                            </li>
+                            <li class="list-group-item"><i class="bi bi-check2-circle me-2 text-success"></i> Barbell
+                            </li>
+                            <li class="list-group-item"><i class="bi bi-check2-circle me-2 text-success"></i> Bench</li>
+                            <li class="list-group-item"><i class="bi bi-check2-circle me-2 text-success"></i> Exercise
+                                Mat</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

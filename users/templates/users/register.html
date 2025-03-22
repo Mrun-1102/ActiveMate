@@ -1,0 +1,79 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="register-section section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Join ActiveMate</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <fieldset class="form-group">
+                                {{ form|crispy }}
+                            </fieldset>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="text" class="form-control" id="phone" name="phone">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="fitness_goal">Fitness Goal</label>
+                                    <select class="form-control" id="fitness_goal" name="fitness_goal">
+                                        <option value="">Select Your Goal</option>
+                                        <option value="weight-loss">Weight Loss</option>
+                                        <option value="muscle-gain">Muscle Gain</option>
+                                        <option value="endurance">Endurance</option>
+                                        <option value="flexibility">Flexibility</option>
+                                        <option value="general">General Fitness</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="fitness_level">Fitness Level</label>
+                                    <select class="form-control" id="fitness_level" name="fitness_level">
+                                        <option value="">Fitness Level</option>
+                                        <option value="beginner">Beginner</option>
+                                        <option value="intermediate">Intermediate</option>
+                                        <option value="advanced">Advanced</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="plan">Membership Plan</label>
+                                    <select class="form-control" id="plan" name="plan">
+                                        <option value="">Select Plan</option>
+                                        <option value="free">Free Trial</option>
+                                        <option value="basic">Basic Plan</option>
+                                        <option value="premium">Premium Plan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-lg btn-block" type="submit">Sign Up</button>
+                            </div>
+                        </form>
+                        <div class="border-top pt-3">
+                            <small class="text-muted">
+                                Already have an account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,291 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="start-workout-section section">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'workout_plans' %}">Workout Plans</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'workout_plan_detail' workout.plan.id %}">{{
+                                workout.plan.title }}</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'workout_detail' workout.id %}">{{ workout.title
+                                }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Start Workout</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="mb-0">{{ workout.title }}</h2>
+                            <div>
+                                <span id="workout-timer" class="badge bg-primary fs-5 p-2">00:00:00</span>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3">
+                            <span class="badge bg-secondary me-2">{{ workout.get_day_of_week_display }}</span>
+                            <span class="badge bg-info">{{ workout.plan.get_level_display }}</span>
+                        </div>
+                        <p>{{ workout.description }}</p>
+                        <div class="d-flex justify-content-between">
+                            <button id="start-timer-btn" class="btn btn-success">
+                                <i class="bi bi-play-fill"></i> Start Timer
+                            </button>
+                            <button id="pause-timer-btn" class="btn btn-warning d-none">
+                                <i class="bi bi-pause-fill"></i> Pause
+                            </button>
+                            <button id="reset-timer-btn" class="btn btn-danger d-none">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <form action="{% url 'complete_workout' workout.id %}" method="POST" id="workout-form">
+                    {% csrf_token %}
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h3 class="mb-4">Track Your Exercises</h3>
+
+                            <div class="accordion" id="exerciseAccordion">
+                                {% for exercise_item in exercises %}
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="heading{{ exercise_item.id }}">
+                                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}"
+                                            type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse{{ exercise_item.id }}"
+                                            aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                            aria-controls="collapse{{ exercise_item.id }}">
+                                            <div class="d-flex justify-content-between w-100 me-3">
+                                                <span>{{ forloop.counter }}. {{ exercise_item.exercise.name }}</span>
+                                                <span class="badge bg-secondary rounded-pill">{{ exercise_item.sets }} ×
+                                                    {{ exercise_item.reps }}</span>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ exercise_item.id }}"
+                                        class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                                        aria-labelledby="heading{{ exercise_item.id }}"
+                                        data-bs-parent="#exerciseAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row mb-3">
+                                                <div class="col-md-4">
+                                                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                                                        style="height: 200px; border-radius: 5px;">
+                                                        <p class="mb-0">Exercise Image</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h5>{{ exercise_item.exercise.name }}</h5>
+                                                    <p>{{ exercise_item.exercise.description }}</p>
+                                                    <div class="d-flex mb-2">
+                                                        <span class="badge bg-primary me-2">{{ exercise_item.sets }}
+                                                            sets</span>
+                                                        <span class="badge bg-secondary me-2">{{ exercise_item.reps }}
+                                                            reps</span>
+                                                        <span class="badge bg-info">{{ exercise_item.rest_time }}s
+                                                            rest</span>
+                                                    </div>
+                                                    {% if exercise_item.exercise.video_url %}
+                                                    <a href="{{ exercise_item.exercise.video_url }}"
+                                                        class="btn btn-sm btn-outline-primary" target="_blank">
+                                                        <i class="bi bi-play-circle"></i> Watch Demo
+                                                    </a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="sets_completed_{{ exercise_item.exercise.id }}"
+                                                        class="form-label">Sets Completed</label>
+                                                    <input type="number" class="form-control"
+                                                        id="sets_completed_{{ exercise_item.exercise.id }}"
+                                                        name="sets_completed_{{ exercise_item.exercise.id }}" min="0"
+                                                        max="{{ exercise_item.sets }}" value="{{ exercise_item.sets }}">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="reps_per_set_{{ exercise_item.exercise.id }}"
+                                                        class="form-label">Reps Per Set</label>
+                                                    <input type="text" class="form-control"
+                                                        id="reps_per_set_{{ exercise_item.exercise.id }}"
+                                                        name="reps_per_set_{{ exercise_item.exercise.id }}"
+                                                        placeholder="e.g. 10,8,8,6">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="weight_used_{{ exercise_item.exercise.id }}"
+                                                        class="form-label">Weight Used (lbs/kg)</label>
+                                                    <input type="text" class="form-control"
+                                                        id="weight_used_{{ exercise_item.exercise.id }}"
+                                                        name="weight_used_{{ exercise_item.exercise.id }}"
+                                                        placeholder="e.g. 50,50,45,45">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-check">
+                                                <input class="form-check-input exercise-complete" type="checkbox"
+                                                    id="exercise_complete_{{ exercise_item.exercise.id }}">
+                                                <label class="form-check-label"
+                                                    for="exercise_complete_{{ exercise_item.exercise.id }}">
+                                                    Mark as completed
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h3 class="mb-3">Workout Summary</h3>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="duration" class="form-label">Workout Duration (minutes)</label>
+                                    <input type="number" class="form-control" id="duration" name="duration" min="1"
+                                        required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="notes" class="form-label">Notes</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3"
+                                        placeholder="How did the workout feel? Any challenges?"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Complete Workout</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4 sticky-top" style="top: 100px;">
+                    <div class="card-body">
+                        <h3 class="mb-3">Workout Progress</h3>
+                        <div class="progress mb-3" style="height: 25px;">
+                            <div id="workout-progress" class="progress-bar progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                                aria-valuemax="100">0%</div>
+                        </div>
+                        <p class="text-center"><span id="completed-exercises">0</span> of <span id="total-exercises">{{
+                                exercises|length }}</span> exercises completed</p>
+
+                        <hr>
+
+                        <h4 class="mb-3">Exercise List</h4>
+                        <ul class="list-group">
+                            {% for exercise_item in exercises %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ exercise_item.exercise.name }}
+                                <span class="badge bg-secondary rounded-pill">{{ exercise_item.sets }} × {{
+                                    exercise_item.reps }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <hr>
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-success"
+                                onclick="document.getElementById('workout-form').submit();">
+                                <i class="bi bi-check-circle"></i> Finish Workout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Timer functionality
+        let timerInterval;
+        let seconds = 0;
+        let timerRunning = false;
+
+        const startBtn = document.getElementById('start-timer-btn');
+        const pauseBtn = document.getElementById('pause-timer-btn');
+        const resetBtn = document.getElementById('reset-timer-btn');
+        const timerDisplay = document.getElementById('workout-timer');
+        const durationInput = document.getElementById('duration');
+
+        startBtn.addEventListener('click', function () {
+            if (!timerRunning) {
+                timerInterval = setInterval(updateTimer, 1000);
+                timerRunning = true;
+                startBtn.classList.add('d-none');
+                pauseBtn.classList.remove('d-none');
+                resetBtn.classList.remove('d-none');
+            }
+        });
+
+        pauseBtn.addEventListener('click', function () {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            startBtn.classList.remove('d-none');
+            pauseBtn.classList.add('d-none');
+        });
+
+        resetBtn.addEventListener('click', function () {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            seconds = 0;
+            updateTimerDisplay();
+            startBtn.classList.remove('d-none');
+            pauseBtn.classList.add('d-none');
+            resetBtn.classList.add('d-none');
+        });
+
+        function updateTimer() {
+            seconds++;
+            updateTimerDisplay();
+
+            // Update duration input in minutes
+            durationInput.value = Math.floor(seconds / 60);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Progress tracking
+        const checkboxes = document.querySelectorAll('.exercise-complete');
+        const progressBar = document.getElementById('workout-progress');
+        const completedExercisesDisplay = document.getElementById('completed-exercises');
+        const totalExercises = checkboxes.length;
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateProgress);
+        });
+
+        function updateProgress() {
+            const completed = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+            const percentage = Math.round((completed / totalExercises) * 100);
+
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${percentage}%`;
+            progressBar.setAttribute('aria-valuenow', percentage);
+            completedExercisesDisplay.textContent = completed;
+        }
+    });
+</script>
+{% endblock %}

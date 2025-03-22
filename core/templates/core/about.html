@@ -1,0 +1,121 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- About Section -->
+<section id="about" class="about section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>About Us</h2>
+        <p><span>Learn More</span> <span class="description-title">About Us</span></p>
+    </div>
+
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-7" data-aos="fade-up" data-aos-delay="100">
+                <img src="{% static 'assets/img/about.jpg' %}" class="img-fluid mb-4" alt="">
+            </div>
+            <div class="col-lg-5" data-aos="fade-up" data-aos-delay="250">
+                <div class="content ps-0 ps-lg-5">
+                    <p class="fst-italic">
+                        ActiveMate was founded with a simple mission: to make fitness tracking accessible, engaging, and
+                        effective for everyone.
+                    </p>
+                    <ul>
+                        <li><i class="bi bi-check-circle-fill"></i> <span>Founded in 2023 by a team of fitness
+                                enthusiasts and tech experts</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i> <span>Dedicated to helping people achieve their
+                                fitness goals through technology</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i> <span>Committed to continuous improvement and
+                                innovation in fitness tracking</span></li>
+                    </ul>
+                    <p>
+                        Our team consists of certified fitness trainers, nutritionists, and software developers who are
+                        passionate about health and wellness. We believe that everyone deserves access to tools that can
+                        help them live healthier, more active lives.
+                    </p>
+                    <p>
+                        At ActiveMate, we understand that every fitness journey is unique. That's why we've created a
+                        platform that adapts to your individual needs and goals, providing personalized guidance and
+                        support every step of the way.
+                    </p>
+
+                    <div class="position-relative mt-4">
+                        <img src="{% static 'assets/img/about-2.jpg' %}" class="img-fluid" alt="">
+                        <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox pulsating-play-btn"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section id="team" class="team section bg-light">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Our Team</h2>
+        <p><span>Meet The</span> <span class="description-title">People Behind ActiveMate</span></p>
+    </div>
+
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="{% static 'assets/img/team/team-1.jpg' %}" class="img-fluid" alt="">
+                        <div class="social">
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="member-info">
+                        <h4>John Smith</h4>
+                        <span>Founder & CEO</span>
+                        <p>Former professional athlete with a passion for making fitness accessible to everyone.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="{% static 'assets/img/team/team-2.jpg' %}" class="img-fluid" alt="">
+                        <div class="social">
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="member-info">
+                        <h4>Sarah Johnson</h4>
+                        <span>Head of Fitness</span>
+                        <p>Certified personal trainer with over 10 years of experience in fitness program development.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="{% static 'assets/img/team/team-3.jpg' %}" class="img-fluid" alt="">
+                        <div class="social">
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="member-info">
+                        <h4>Michael Chen</h4>
+                        <span>CTO</span>
+                        <p>Tech innovator with a background in health applications and wearable technology.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
