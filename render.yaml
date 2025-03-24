@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: activemate
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn activemate.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: "0"
+      - key: SECRET_KEY
+        generateValue: true
+    staticPublishPath: ./staticfiles

@@ -38,3 +38,14 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  
+  deploy:
+    needs: [test, lint]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Render
+      uses: JorgeLNJunior/render-deploy@v1.4.3
+      with:
+        service_id: ${{ secrets.RENDER_SERVICE_ID }}
+        api_key: ${{ secrets.RENDER_API_KEY }}
